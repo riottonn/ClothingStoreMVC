@@ -1,8 +1,50 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h2 class="text-white">Звіти та Аналітика</h2>
+        <div class="btn-group">
+            <a asp-controller="Reports" asp-action="ExportToExcel" class="btn btn-success btn-lg">Excel</a>
+            <a asp-controller="Reports" asp-action="ExportToWord" class="btn btn-primary btn-lg">Word (+1 бал)</a>
+        </div>
+    </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="row">
+        <div class="col-12">
+            <div id="chart_div" style="width: 100%; height: 500px;"></div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            fetch('/api/charts/productData')
+                .then(res => res.json())
+                .then(data => {
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('string', 'Категорія');
+                    dataTable.addColumn('number', 'Кількість');
+                    data.forEach(item => dataTable.addRow([item.category, item.count]));
+
+                    var options = { title: 'Товари за категоріями', is3D: true, backgroundColor: 'transparent', textStyle: {color: '#FFF'} };
+                    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                    chart.draw(dataTable, options);
+                });
+        }
+    </script>
+}
+@if (User.Identity.IsAuthenticated)
+{
+    <p>Вітаємо, @User.Identity.Name</p>
+    <form method="post" asp-controller="Account" asp-action="Logout">
+        <input type="submit" value="Вихід" />
+    </form>
+}
+else
+{
+    <a asp-controller="Account" asp-action="Login">Вхід</a>
+    <a asp-controller="Account" asp-action="Register">Реєстрація</a>
+}

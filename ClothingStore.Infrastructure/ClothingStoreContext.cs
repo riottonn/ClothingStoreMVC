@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ClothingStore.Domain.Model;
 using ClothingStore.Domain;
-namespace ClothingStore.Domain.Model;
+using ClothingStore.Domain;
+namespace ClothingStore.Infrastructure;
 
 public partial class ClothingStoreContext : DbContext
 {
