@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ClothingStore.Domain;
+using ClothingStore.Domain;
 
 public partial class Product : Entity
 {
